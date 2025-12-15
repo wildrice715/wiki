@@ -2,14 +2,14 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import os
 import random
-import markdown
+import markdown2
 
 from . import util
 
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries(),
+        "entries": util.list_entries()
     })
 
 
@@ -22,7 +22,7 @@ def entry(request, title):
           "title": title,  
         })
     
-    html_content = markdown.markdown(content)
+    html_content = markdown2.markdown(content)
     return render(request, "encyclopedia/error.html" {
         "title": title,
         "content": util.markdown_to_html(content),
