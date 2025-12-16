@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from djang.https import reverse
 import os
 import random
 import markdown2
@@ -18,13 +17,13 @@ def index(request):
 def entry(request, title):
     content = util.get_entry(title)
     if content is None:
-        return render(request, "encyclopedia/error.html", {
+        return render(request, 'encyclopedia/error.html', {
           "error_title": "Page Not Found",
           "message": f"The page does not exist",
           "title": title,  
         })
     
-    return render(request, "encyclopedia/entry.html" {
+    return render(request, 'encyclopedia/entry.html', {
         "title": title,
         "content": markdown2.markdown(content),
     })
