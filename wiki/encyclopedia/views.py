@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from djang.https import reverse
 import os
 import random
 import markdown2
@@ -19,27 +20,29 @@ def entry(request, title):
     if content is None:
         return render(request, "encyclopedia/error.html", {
           "error_title": "Page Not Found",
-          "error_message": f"The page '{title}' does not exist",
+          "message": f"The page does not exist",
           "title": title,  
         })
     
-    html_content = markdown2.markdown(content)
-    return render(request, "encyclopedia/error.html" {
+    return render(request, "encyclopedia/entry.html" {
         "title": title,
-        "content": util.markdown_to_html(content),
+        "content": markdown2.markdown(content),
     })
 
 
 
 def edit(request, title):
-    markdown_content = util.get_entry(title)
-    if not markdown_content:
+    if request.method == "POST":
+        content = request.POST.get("content")
+        util.save_entry(title, content)
+        return HttpResponseRedirect(reverse("entry", args=[title]))
+    content = util.get_entry(title)
+    if content is None:
         return render(request, "encyclopedia/error.html", {
-            "error_message": "The requested page was not found."
+            "message": "This page does not exist."
         })
     
     return render(request, "encyclopedia/edit.html", {
         "title": title,
-        "content": markdown_content
-    })
-                      
+        "content": content
+    })               
