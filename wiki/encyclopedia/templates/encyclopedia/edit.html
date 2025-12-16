@@ -1,17 +1,17 @@
 {% extends "encyclopedia/layout.html" %}
 
 {% block title %}
-    Edit {{ title }} Page
+    Edit {{page_name|safe}}
 {% endblock %}
 
 {% block body %}
 
-    <h1>Edit Entry: {{ title }}</h1>
-
-    <form action="{% url 'edit_page' title %}" method="post">
-        {% csrf_token %}
-        <textarea name="content" rows="10"cols="60">{{ content }} =</textarea>textarea><br><br>
-        <button type="submit">Save Changes</button>  
+    <h1>Edit {{page_name|safe}}</h1>
+    <form method="GET" action="/wiki/{{page_name}}/editPage">
+        <p><label for="entryEdit">Edit the entry in markdown:</label></p>
+        <textarea id="entryEdit" rows="5" cols="5" name="entryEdit">{{file}}</textarea>
+        <br>
+        <input type="submit" value="Submit">
     </form>
 
 {% endblock %}

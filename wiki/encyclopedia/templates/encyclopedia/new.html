@@ -1,18 +1,19 @@
 {% extends "encyclopedia/layout.html" %}
 
+{% block title %}
+    Create
+{% endblock %}
 
-{% block body %}
+{% block body %} 
 
-    <h1>Create New Entry</h1>
-
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
-
-    <form action="{% url 'new_page' %}" method="post">
-        {% csrf token %} 
-        <input type="text" name="title" placeholder="Entry Title" required><br><br>
-        <textarea name="content" rows="10" cols="50" placeholder="Write Markdowndown content here" required></textarea><br><br>
-        <button type="submit">Create</button>
+    <h1>Create a new entry</h1>
+    <form method="GET" action="{% url 'makePage' %}">
+        <label for="titleCreation">Enter the new title:</label>
+        <input type="text" placeholder="Title" id="titleCreation" name="titleCreation">
+        <p><label for="entryCreation">Write your new entry in Markdown:</label></p>
+        <textarea id="entryCreation" rows="5" cols="5" name="entryCreation"></textarea>
+        <br>
+        <input type="submit" value="Submit">
     </form>
+
 {% endblock %}

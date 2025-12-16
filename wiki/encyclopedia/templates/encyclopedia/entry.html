@@ -1,13 +1,13 @@
 {% extends "encyclopedia/layout.html" %}
 
-{% block body %}
+{% block title %}
+    {{ page_name|safe }}
+{% endblock %}
 
-    <h1>{{ title }}</h1>
-<div>
-    {{ content|safe }}
-</div>
-<br>
-<a href="{% url 'edit_page' title %}" class="button">Edit Page</a>
-<a href="/">Back to Home</a>
-    
+{% block body %} 
+    <div style="text-align: right; margin-right: 25px;">
+        <a href="/wiki/{{page_name}}/edit">Edit Page</a>
+    </div>
+    {{entry|safe}}
+
 {% endblock %}
