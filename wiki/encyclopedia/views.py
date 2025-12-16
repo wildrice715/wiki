@@ -20,7 +20,7 @@ def page(request, pagename):
             "page_name": pagename
             })
     except TypeError:
-        return render(request, "encyclopedia/notfound.html")
+        return render(request, "encyclopedia/error.html")
     
 def search(request):
     search_name = request.GET.get('q')
