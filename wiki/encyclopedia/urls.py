@@ -11,4 +11,5 @@ urlpatterns = [
     path("makePage", views.makePage, name="makePage"),
     path("wiki/<str:pagename>/edit", views.edit, name="edit"),
     path("wiki/<str:pagename>/editPage", views.editPage, name="editPage")
+    path("wiki/<str:entry>", views.entry, name="entry"),
 ]

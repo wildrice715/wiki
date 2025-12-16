@@ -51,7 +51,7 @@ def makePage(request):
     new_entry = request.GET.get('entryCreation')
     filepath = os.path.join("entries", f"{new_title}.md")
     if os.path.exists(filepath):
-        return render(request, "encyclopedia/already_exists.html")
+        return render(request, "encyclopedia/error.html")
     with open(filepath, "w") as file:
         file.write(new_entry)
     return redirect(f"wiki/{new_title}")
@@ -71,3 +71,11 @@ def editPage(request, pagename):
     with(open(filepath, "w")) as file:
         file.write(entry)
     return redirect(f"/wiki/{pagename}")
+
+def entry(request, entry):
+    markdowner = Mardown()
+    entryPage = util.get_entry(entry)
+    if entryPage is None:
+        return render(request, "encyclopedia/error.html",{
+            "entryTitle": entry
+        })
