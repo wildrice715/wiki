@@ -1,82 +1,63 @@
-from django.shortcuts import render, redirect
-from . import util
-from markdown2 import Markdown
 from random import choice
-import os
 
+from django.shortcuts import render, redirect
+from markdown2 import markdown
 
-markdowner = Markdown()
+from . import util
 
 
 def index(request):
-    return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries()
-    })
+    """ Home Page, displays all available entries """
+    return render(request, "encyclopedia/index.html", {"entries": util.list_entries()})
 
-def page(request, pagename):
-    try:
-        return render(request, "encyclopedia/page.html", {
-            "entry": markdowner.convert(util.get_entry(pagename)),
-            "page_name": pagename
-            })
-    except TypeError:
-        return render(request, "encyclopedia/error.html")
-    
+
+def entry(request, title):
+    """ Displays the requested entry """
+    content = util.get_entry(title.strip())
+    if content is None:
+        content = "<h1>Error: Page Not Found</h1>"
+    content = markdown(content)
+    return render(request, "encyclopedia/entry.html", {"title": title, "entry": content})
+
+
 def search(request):
-    search_name = request.GET.get('q')
-    try:
-        return render(request, "encyclopedia/page.html", {
-            "entry": markdowner.convert(util.get_entry(search_name)),
-            "page_name": search_name
-            })
-    except TypeError:
-        return render(request, "encyclopedia/search.html", {
-            "entries": util.list_entries(),
-            "search_name": search_name
-        })
-    
-
-def random(request):
-    entries = util.list_entries()
-    entry = choice(entries)
-    return redirect(f"wiki/{entry}")
+    """ Loads requested title page if it exists, else displays search results """
+    q = request.POST.get('q').strip()
+    if q in util.list_entries():
+        return redirect("entry", title=q)
+    return render(request, "encyclopedia/search.html", {"entries": util.search(q), "q": q})
 
 
 def create(request):
+    """ Lets users create a new page on the wiki """
+    if request.method == "POST":
+        title = request.POST.get("title").strip()
+        content = request.POST.get("content").strip()
+        if title in util.list_entries():
+            return render(request, "encyclopedia/create.html", {"error": "Page already exists!"})
+        elif title == "" or content == "":
+            return render(request, "encyclopedia/create.html", {"error": "Title and content are required!"})
+        util.save_entry(title, content)
+        return redirect("entry", title=title)
     return render(request, "encyclopedia/create.html")
 
 
-def makePage(request):
-    new_title = request.GET.get('titleCreation')
-    new_entry = request.GET.get('entryCreation')
-    filepath = os.path.join("entries", f"{new_title}.md")
-    if os.path.exists(filepath):
-        return render(request, "encyclopedia/error.html")
-    with open(filepath, "w") as file:
-        file.write(new_entry)
-    return redirect(f"wiki/{new_title}")
+def edit(request, title):
+    """ Lets users edit an existing page on the wiki """
+    content = util.get_entry(title.strip())
+    if content is None:
+        return render(request, "encyclopedia/edit.html", {'error': "Page Not Found"})
+    if request.method == "GET":
+        content = request.GET.get("content").strip()
+        if content == "":
+            return render(request, "encyclopedia/edit.html",
+                          {"message": "Can't save with empty field.", "title": title, "content": content})
+        util.save_entry(title, content)
+        return redirect("entry", title=title)
+    return render(request, "encyclopedia/edit.html", {'content': content, 'title': title})
 
 
-def edit(request, pagename):
-    filepath = os.path.join("entries", f"{pagename}.md")
-    with open(filepath, "r") as file:
-        return render(request, "encyclopedia/edit.html", {
-            "page_name": pagename,
-            "file": file.read()
-        })
-
-def editPage(request, pagename):
-    filepath = os.path.join("entries", f"{pagename}.md")
-    entry = request.GET.get('entryEdit')
-    with(open(filepath, "w")) as file:
-        file.write(entry)
-    return redirect(f"/wiki/{pagename}")
-
-def entry(request, entry):
-    markdowner = Markdown()
-    entryPage = util.get_entry(entry)
-    if entryPage is None:
-        return render(request, "encyclopedia/error.html",{
-            "entry": markdowner.convert(entryPage),
-            "entryTitle": entry
-        })
+def random(request):
+    """ Loads a random page from the wiki """
+    entries = util.list_entries()
+    return redirect("entry", title=choice(entries))

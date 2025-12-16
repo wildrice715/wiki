@@ -1,17 +1,30 @@
+
 {% extends "encyclopedia/layout.html" %}
 
 {% block title %}
-    Edit {{page_name|safe}}
+    Edit {{ title }}
 {% endblock %}
 
 {% block body %}
+    <h1>Edit Page: {{ title }}</h1>
 
-    <h1>Edit {{page_name|safe}}</h1>
-    <form method="GET" action="/wiki/{{page_name}}/editPage">
-        <p><label for="entryEdit">Edit the entry in markdown:</label></p>
-        <textarea id="entryEdit" rows="5" cols="5" name="entryEdit">{{file}}</textarea>
-        <br>
-        <input type="submit" value="Submit">
-    </form>
+    <div>
+        {% if message %}
+            <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% endif %}
+
+        <form method="GET">
+            {% csrf_token %}
+            <div class="form">
+                <div>
+                    <label for="content">Content</label>
+                    <textarea style="height: 700px; width: 800px;" class="form-control" id="content" name="content"
+                              placeholder="Write page content in markdown">
+                        {% if content %}{{ content }}{% endif %}</textarea>
+                </div>
+                <input type="submit" value="Save" class="btn btn-success"/>
+            </div>
+        </form>
+    </div>
 
 {% endblock %}

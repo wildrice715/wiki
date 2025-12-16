@@ -4,16 +4,15 @@
     Search
 {% endblock %}
 
-{% block body %} 
-
-    <h1>Could not find {{search_name}}</h1>
-    <h3>Relevant searches:</h3>
-
+{% block body %}
+    <h1>Related Pages: </h1>
     <ul>
         {% for entry in entries %}
-            {% if search_name|lower in entry|lower %}
-                <li><a href="/wiki/{{ entry }}">{{ entry }}</a></li>
-            {% endif %}
+            <a href="{% url 'entry' entry %}">
+                <li>{{ entry }}</li>
+            </a>
+        {% empty %}
+            <li>No matching results!</li>
         {% endfor %}
     </ul>
 
