@@ -19,16 +19,13 @@ def entry(request, title):
     content = util.get_entry(title)
     if content is None:
         return render(request, 'encyclopedia/error.html', {
-          "error_title": "Page Not Found",
           "message": f"The page does not exist",
-          "title": title,  
         })
     
     return render(request, 'encyclopedia/entry.html', {
         "title": title,
         "content": markdown2.markdown(content),
     })
-
 
 
 def edit(request, title):
@@ -47,7 +44,8 @@ def edit(request, title):
         "content": content
     })               
 
- def new_page(request):
+
+def new_page(request):
         if request.method == "POST":
             title = request.POST.get("title")
             content = request.POST.get("content")
@@ -56,11 +54,26 @@ def edit(request, title):
             return render(request, "encyclopedia/new.html", {
                 "error": "An entry with this title already exists"
             })
+        
         util.save_entry(title, content)
-        return HttpResponseRedirect(reverse("entry", args=[title]))
-    return render(request, "encyclopedia/new.html")
+        return HttpResponseRedirect(reverse("entry", args=[title]))        
+        return render(request, "encyclopedia/new.html")
+
 
 def random_page(request):
     entries = util.list_entries()
     random_title = random.choice(entries)
     return HttpResponseRedirect(reverse("entry", args=[random_title]))
+
+
+def search(request):
+    query = request.GET.get("q")
+    entries = util.list_entries()
+
+    if util.get_entry(query):
+        return HttpResponseRedirect(reverse("entry", args=[query]))
+    filtered = [entry for entry in entries if query.lower() in entry.lower()]
+    return render(request, "encyclopedia/search.html", {
+        "query": query,
+        "results": filtered
+    })
