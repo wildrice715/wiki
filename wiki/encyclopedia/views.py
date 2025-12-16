@@ -73,9 +73,10 @@ def editPage(request, pagename):
     return redirect(f"/wiki/{pagename}")
 
 def entry(request, entry):
-    markdowner = Mardown()
+    markdowner = Markdown()
     entryPage = util.get_entry(entry)
     if entryPage is None:
         return render(request, "encyclopedia/error.html",{
+            "entry": markdowner.convert(entryPage),
             "entryTitle": entry
         })
