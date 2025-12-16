@@ -1,0 +1,19 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Create
+{% endblock %}
+
+{% block body %} 
+
+    <h1>Create a new entry</h1>
+    <form method="GET" action="{% url 'makePage' %}">
+        <label for="titleCreation">Enter the new title:</label>
+        <input type="text" placeholder="Title" id="titleCreation" name="titleCreation">
+        <p><label for="entryCreation">Write your new entry in Markdown:</label></p>
+        <textarea id="entryCreation" rows="5" cols="5" name="entryCreation"></textarea>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+
+{% endblock %}
