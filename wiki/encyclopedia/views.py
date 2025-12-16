@@ -11,13 +11,18 @@ def index(request):
     return render(request, "encyclopedia/index.html", {"entries": util.list_entries()})
 
 
-def entry(request, title):
-    """ Displays the requested entry """
-    content = util.get_entry(title.strip())
-    if content is None:
-        content = "<h1>Error: Page Not Found</h1>"
-    content = markdown(content)
-    return render(request, "encyclopedia/entry.html", {"title": title, "entry": content})
+def entry(request, entry):
+    markdowner = markdown()
+    entry = util.get_entry(entry)
+    if entry is None:
+        return render(request, "encyclopedia/error.html", {
+            "entryTitle": entry
+        })
+    else:
+        return render(request, "encyclopedia/entry.html", {
+            "entry": markdowner.convert(entry),
+            "entryTitle": entry
+        })
 
 
 def search(request):
