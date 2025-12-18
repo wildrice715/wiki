@@ -1,10 +1,11 @@
 from random import choice
 
 from django.shortcuts import render, redirect
-from markdown2 import markdown
+
 
 from . import util
 
+from markdown import markdown
 
 def index(request):
     """ Home Page, displays all available entries """
