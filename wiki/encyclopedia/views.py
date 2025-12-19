@@ -1,29 +1,32 @@
 from random import choice
-
-from django.shortcuts import render, redirect
-
-
+from django.shortcuts import render
+from django.shortcuts import redirect
 from . import util
+from markdown2 import markdown
 
-from markdown import markdown
+
 
 def index(request):
     """ Home Page, displays all available entries """
-    return render(request, "encyclopedia/index.html", {"entries": util.list_entries()})
+    return render(request, "encyclopedia/index.html", {
+        "entries": util.list_entries()
+    })
+
 
 
 def entry(request, entry):
     markdowner = markdown()
-    entry = util.get_entry(entry)
-    if entry is None:
+    entryPage = util.get_entry(entry)
+    if entryPage is None:
         return render(request, "encyclopedia/error.html", {
             "entryTitle": entry
         })
     else:
         return render(request, "encyclopedia/entry.html", {
-            "entry": markdowner.convert(entry),
+            "entry": markdowner.convert(entryPage),
             "entryTitle": entry
         })
+
 
 
 def search(request):
@@ -32,6 +35,7 @@ def search(request):
     if q in util.list_entries():
         return redirect("entry", title=q)
     return render(request, "encyclopedia/search.html", {"entries": util.search(q), "q": q})
+
 
 
 def create(request):
@@ -48,6 +52,7 @@ def create(request):
     return render(request, "encyclopedia/create.html")
 
 
+
 def edit(request, title):
     """ Lets users edit an existing page on the wiki """
     content = util.get_entry(title.strip())
@@ -61,6 +66,7 @@ def edit(request, title):
         util.save_entry(title, content)
         return redirect("entry", title=title)
     return render(request, "encyclopedia/edit.html", {'content': content, 'title': title})
+
 
 
 def random(request):
