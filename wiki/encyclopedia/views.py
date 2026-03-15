@@ -14,27 +14,57 @@ def index(request):
 
 
 
-def entry(request, entry):
-    markdowner = markdown()
-    entryPage = util.get_entry(entry)
-    if entryPage is None:
-        return render(request, "encyclopedia/error.html", {
-            "entryTitle": entry
-        })
-    else:
+def entry(request, title):
+   
+       entry_md = util.get_entry(title)
+
+    if entry_md != None:
+        # Title exists, convert md to HTML and return rendered template
+        entry_HTML = Markdown().convert(entry_md)
         return render(request, "encyclopedia/entry.html", {
-            "entry": markdowner.convert(entry),
-            "entryTitle": entry
-        })
+          "title": title,
+          "entry": entry_HTML,
+          "search_form": SearchForm(),
+          })
+    else:
+        # Page does not exist, get links for similar titles:
+        related_titles = util.related_titles(title)
+
+        return render(request, "encyclopedia/error.html", {
+          "title": title,
+          "related_titles": related_titles,
+          "search_form": SearchForm(),
+          })
 
 
 
 def search(request):
-    """ Loads requested title page if it exists, else displays search results """
-    q = request.POST.get('q').strip()
-    if q in util.list_entries():
-        return redirect("entry", title=q)
-    return render(request, "encyclopedia/search.html", {"entries": util.search(q), "q": q})
+ # If search page reached by submitting search form:
+    if request.method == "POST":
+        form = SearchForm(request.POST)
+
+        # If form is valid try to search for title:
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            entry_md = util.get_entry(title)
+
+            print('search request: ', title)
+
+            if entry_md:
+                # If entry exists, redirect to entry view
+                return redirect(reverse('entry', args=[title]))
+            else:
+                # Otherwise display relevant search results
+                related_titles = util.related_titles(title)
+
+                return render(request, "encyclopedia/search.html", {
+                "title": title,
+                "related_titles": related_titles,
+                "search_form": SearchForm()
+                })
+
+    # Otherwise form not posted or form not valid, return to index page:
+    return redirect(reverse('index'))
 
 
 
