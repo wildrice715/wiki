@@ -1,7 +1,6 @@
 from random import choice
 from django import forms
-from django.shortcuts import render
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from markdown2 import markdown
 from . import util
@@ -24,7 +23,7 @@ def entry(request, entry):
         })
     else:
         return render(request, "encyclopedia/entry.html", {
-            "entry": markdowner.convert(entryPage),
+            "entry": markdowner.convert(entry),
             "entryTitle": entry
         })
 
