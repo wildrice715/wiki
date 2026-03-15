@@ -2,6 +2,7 @@ from random import choice
 from django import forms
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.urls import reverse
 from markdown2 import markdown
 from . import util
 
