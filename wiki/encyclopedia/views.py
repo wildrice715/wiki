@@ -1,5 +1,4 @@
-from random
-import choice
+from random import choice
 from django import forms
 from django.shortcuts import render
 from django.shortcuts import redirect
