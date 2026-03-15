@@ -72,4 +72,8 @@ def edit(request, title):
 def random(request):
     """ Loads a random page from the wiki """
     entries = util.list_entries()
+
+    titles = util.list_entries()
+    title = random.choice(titles)
+
     return redirect("entry", title=choice(entries))
