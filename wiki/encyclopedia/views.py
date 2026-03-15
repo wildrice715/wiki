@@ -1,9 +1,11 @@
-from random import choice
+from random
+import choice
+from django import forms
 from django.shortcuts import render
 from django.shortcuts import redirect
-from . import util
+from django.http import HttpResponse
 from markdown2 import markdown
-
+from . import util
 
 
 def index(request):
