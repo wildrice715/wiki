@@ -42,7 +42,7 @@ def wiki(request, entry):
     return render(
         request,
         "encyclopedia/wiki/html",
-        {"title": entry, "content": Markdown().convert(content)},
+        {"title": entry, "content": markdown().convert(content)},
     )
 
 def entry(request, title):
