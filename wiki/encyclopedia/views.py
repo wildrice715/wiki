@@ -177,4 +177,4 @@ def random(request):
 
     entries = util.list_entries()
     entry = entries[randint(0, len(entries) -1)]
-    return redirect("wiki", entry)
+    return HttpResponseRedirect("wiki", entry)
