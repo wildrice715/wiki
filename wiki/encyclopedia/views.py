@@ -3,6 +3,7 @@ from django import forms
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse
+from django.http import HttpResponseRedirect
 from markdown2 import Markdown
 from . import util
 
@@ -165,8 +166,9 @@ def random(request):
     """ Takes user to a random encyclopedia entry """
 
     # Get list of titles, pick one at random:
-    titles = util.list_entries()
-    title = random.choice(titles)
+    entries = util.list_entries()
+    title = random.choice(entries)
+    entry = util.get_entry(title)
 
     # Redirect to selected page:
-    return redirect(reverse('entry', args=[title]))
+    return HttpResponseRedirect(reverse("entry", args=[title]))
