@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from markdown2 import Markdown
+from markdown2 import markdown
 from . import util
 
 class SearchForm(forms.Form):
