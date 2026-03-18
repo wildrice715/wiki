@@ -175,9 +175,6 @@ def edit(request, title):
 def random(request):
     """ Takes user to a random encyclopedia entry """
 
-    # Get list of titles, pick one at random:
-    titles = util.list_entries()
-    title = random.choice(titles)
-
-    # Redirect to selected page:
-    return redirect(reverse('entry', args=[title]))
+    entries = util.list_entries()
+    entry = entries[randint(0, len(entries) -1)]
+    return redirect("wiki", entry)
