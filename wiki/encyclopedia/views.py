@@ -166,9 +166,8 @@ def random(request):
     """ Takes user to a random encyclopedia entry """
 
     # Get list of titles, pick one at random:
-    entries = util.list_entries()
-    title = random.choice(entries)
-    entry = util.get_entry(title)
+    titles = util.list_entries()
+    title = random.choice(titles)
 
     # Redirect to selected page:
-    return HttpResponseRedirect(reverse("entry", args=[title]))
+    return redirect(reverse('entry', args=[title]))
