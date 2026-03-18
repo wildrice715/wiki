@@ -35,6 +35,16 @@ def index(request):
         "search_form": SearchForm(),
     })
 
+def wiki(request, entry):
+    if entry not in util.list_entries():
+        raise Http404
+    content = util.get_entry(entry)
+    return render(
+        request,
+        "encyclopedia/wiki/html",
+        {"title": entry, "content": Markdown().convert(content)},
+    )
+
 def entry(request, title):
     """ Displays the requested entry page, if it exists """
 
