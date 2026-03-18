@@ -176,5 +176,5 @@ def random(request):
     """ Takes user to a random encyclopedia entry """
 
     entries = util.list_entries()
-    entry = entries[randint(0, len(entries) -1)]
+    entry = entries[random.randint(0, len(entries) -1)]
     return HttpResponseRedirect("wiki", entry)
