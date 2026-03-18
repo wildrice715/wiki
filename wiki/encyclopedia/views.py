@@ -42,7 +42,7 @@ def entry(request, title):
 
     if entry_md != None:
         # Title exists, convert md to HTML and return rendered template
-        entry_HTML = Markdown().convert(entry_md)
+        entry_HTML = markdown().convert(entry_md)
         return render(request, "encyclopedia/entry.html", {
           "title": title,
           "entry": entry_HTML,
